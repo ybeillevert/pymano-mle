@@ -14,6 +14,7 @@ Pymano is the project of the Datascience course from Datascientest whose objecti
 We made some reasearch on Deep Learning Models that can perform this task.<br/>
 The best model we got was a Convolutional Recurrent Neural Network model (CRNN).<br/>
 This model is able to recognize one word with a Character Error Rate (CER) of 8% on the test set. However as you may experience it on the application, it's less accurate on a word drawn on an HTML canvas.<br/>
+<i>Link to the related GitHub projet: [Pymano](https://github.com/ybeillevert/pymano)
 <i>More information about the CER: [CER introduction](https://torchmetrics.readthedocs.io/en/stable/text/char_error_rate.html)</i>
 
 ## What is Pymano - MLE
