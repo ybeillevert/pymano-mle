@@ -1,0 +1,52 @@
+# Ports ------------------------------------
+API : 5000
+WEB : 8000
+SQL : 3306
+
+
+# Test on your local device -----------------------------
+cd ./pymano-mle/api
+flask run -p 5000
+cd ./pymano-mle/web
+flask run -p 8000
+
+
+# Docker images ----------------------------
+docker image build ./pymano-mle/api -t ybeillevert/pymano-mle-api:latest
+docker image build ./pymano-mle/sql -t ybeillevert/pymano-mle-sql:latest
+docker image build ./pymano-mle/web -t ybeillevert/pymano-mle-web:latest
+docker image build ./pymano-mle/tests -t ybeillevert/pymano-mle-tests:latest
+
+# Push on dockerhub
+docker login --username --password 
+docker push ybeillevert/pymano-mle-api:latest
+docker push ybeillevert/pymano-mle-sql:latest
+docker push ybeillevert/pymano-mle-web:latest
+docker push ybeillevert/pymano-mle-tests:latest
+
+
+# Kubernetes -------------------------------
+# Install minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# start minikube
+minikube start
+minikube dashboard --url=true
+
+# in another terminal, install kubectl
+sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+sudo chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+sudo kubectl version --client
+
+# enable ingress
+minikube addons enable ingress
+
+kubectl create -f ./pymano-mle/k8s/pymano-mle-secret.yml
+kubectl create -f ./pymano-mle/k8s/pymano-mle-deployment.yml
+kubectl create -f ./pymano-mle/k8s/pymano-mle-service.yml
+kubectl create -f ./pymano-mle/k8s/pymano-mle-ingress.yml
+
+# then on local device
+ssh -i "C:\Users\ybeil\Desktop\Datascience\2022-05-02-DataScientest\Cours\MLO\data_enginering_machine.pem" -fNL 80:IPINGRESS:80 ubuntu@IPVM

@@ -1,0 +1,56 @@
+services:
+  api:
+    image: ybeillevert/pymano-mle-api:latest
+    container_name: api
+    networks:
+      - nw
+    environment:
+      SQL_DB_URL: 'IPVM:3306'
+      SQL_DB_PASSWORD: '4dm1n!'
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: curl --fail -s http://localhost:5000/ || exit 1
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      sql:
+        condition: service_healthy
+  web:
+    image: ybeillevert/pymano-mle-web:latest
+    container_name: web
+    networks:
+      - nw
+    environment:
+      API_URL: 'IPVM:5000'
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+  sql:
+    image: ybeillevert/pymano-mle-sql:latest
+    container_name: sql
+    networks:
+      - nw
+    ports:
+      - "3306:3306"
+  tests:
+    image: ybeillevert/pymano-mle-tests:latest
+    container_name: tests
+    networks:
+      - nw
+    volumes:
+      - ./tests-results:/tests-results
+    depends_on:
+      api:
+        condition: service_healthy
+      sql:
+        condition: service_healthy
+    environment:
+      API_URL: 'IPVM:5000'
+      LOG: 1
+networks:
+  nw:

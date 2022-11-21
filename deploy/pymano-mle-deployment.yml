@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pymano-mle-deployment
+  labels:
+    app: pymano-mle-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pymano-mle-web
+  template:
+    metadata:
+      labels:
+        app: pymano-mle-web
+    spec:
+      containers:
+      - name: pymano-mle-api
+        image: ybeillevert/pymano-mle-api:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: SQL_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pymano-mle-secret
+              key: mysqlpwd
+        - name: SQL_DB_URL
+          value: '127.0.0.1:3306'
+      - name: pymano-mle-web
+        image: ybeillevert/pymano-mle-web:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: API_URL
+          value: '127.0.0.1:5000'
+      - name: pymano-mle-sql
+        image: ybeillevert/pymano-mle-sql:latest
+        ports:
+        - containerPort: 3306
+          name: pymano-mle-sql
