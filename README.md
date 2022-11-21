@@ -9,12 +9,14 @@ The final product should contain:
 - deployment files to deploy the project(s) with Kubernetes
 - a documentation about the project
 
+This project was done in 40 hours and I was alone on this project
+
 ## What is Pymano ?
 Pymano is the project of the Datascience course from Datascientest whose objective is to build a model that can recognize a word written by hand.<br/>
 We made some reasearch on Deep Learning Models that can perform this task.<br/>
 The best model we got was a Convolutional Recurrent Neural Network model (CRNN).<br/>
 This model is able to recognize one word with a Character Error Rate (CER) of 8% on the test set. However as you may experience it on the application, it's less accurate on a word drawn on an HTML canvas.<br/>
-<i>Link to the related GitHub projet: [Pymano](https://github.com/ybeillevert/pymano)
+<i>Link to the related GitHub projet: [Pymano](https://github.com/ybeillevert/pymano)</i><br/>
 <i>More information about the CER: [CER introduction](https://torchmetrics.readthedocs.io/en/stable/text/char_error_rate.html)</i>
 
 ## What is Pymano - MLE
@@ -27,16 +29,16 @@ After a successful login, the user access to the canvas page where he can draw a
 ## How to test it ?
 First, there are some useful commands in the <b>commands.txt</b> file from <b>deploy</b> folder.<br/>
 Then, there are 3 ways to test it. You can:
-- Use the commands in the commands.txt file to run the web and api project locally
-    - Useful for developing new features and debugging the code
-- Use the docker-compose file from the deploy folder. 
-    - Useful to see if container are working well together and to run tests
-    - You'll have to change IPVM with the IP of the device that runs the projects.
 - Use the pymano-mle-... yml files to deploy the project on Kubernetes. If you need some guidances there are some commands to run in the commands.txt file. 
-    - Useful to deploy the whole project
     - You'll have to change :
         - IPVM with the IP of the device that runs the projects in the deployment file
         - IPINGRESS with the IP of the ingress
+        - Path/To/Certificate/File.pem with the path of the cerificate used for SSH
+- Use the docker-compose file from the deploy folder. 
+    - Easiest method to test the project regardless of the deployment
+    - You'll have to change IPVM with the IP of the device that runs the projects.
+- Use the commands in the commands.txt file to run the web and api project locally
+    - Useful for developing new features and debugging the code
 
 There are 3 users :
 - admin (password: admin)
@@ -87,9 +89,9 @@ Here is the history of my project:
 ### tests
 - I could have used unittest or pytest for my tests but it would take me too much time to use it with Docker so that tests returns a file.
 - Also, it was required to add tests on the project, but in the case of Pymano, there is not much stuff to test. That's why I put my effort on the other parts of the project.
-- I chose to separate the test project from the api project to separate concerns. For example, if I want to revamp completly the api code without changing the endpoints, I won't have to change any tests.
+- I chose to separate the test project from the api project to separate concerns. For example, if I want to revamp completly the api code without changing the endpoints, I won't have to change any tests (the same applies if I want to change tests)
 ### git
-- I chose to put all code in a single git repository because there are not too much code and I'm the only one working on the project. For a much bigger project and in a team, I would have created a separate git repository for each project 
+- I chose to put all code in a single git repository because there are not too much code and I'm the only one working on the project. For a much bigger project, I would have created a separate git repository for each project 
 
 ## Improvements
 - Use pytest or unittest for tests

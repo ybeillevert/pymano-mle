@@ -3,29 +3,8 @@ API : 5000
 WEB : 8000
 SQL : 3306
 
+# Deploy via Kubernetes on a Linux device-------------------------------
 
-# Test on your local device -----------------------------
-cd ./pymano-mle/api
-flask run -p 5000
-cd ./pymano-mle/web
-flask run -p 8000
-
-
-# Docker images ----------------------------
-docker image build ./pymano-mle/api -t ybeillevert/pymano-mle-api:latest
-docker image build ./pymano-mle/sql -t ybeillevert/pymano-mle-sql:latest
-docker image build ./pymano-mle/web -t ybeillevert/pymano-mle-web:latest
-docker image build ./pymano-mle/tests -t ybeillevert/pymano-mle-tests:latest
-
-# Push on dockerhub
-docker login --username --password 
-docker push ybeillevert/pymano-mle-api:latest
-docker push ybeillevert/pymano-mle-sql:latest
-docker push ybeillevert/pymano-mle-web:latest
-docker push ybeillevert/pymano-mle-tests:latest
-
-
-# Kubernetes -------------------------------
 # Install minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
@@ -43,10 +22,31 @@ sudo kubectl version --client
 # enable ingress
 minikube addons enable ingress
 
+# Change the following values in the yml files before running the commands
+# - IPVM with the IP of the device that runs the projects in the deployment file
+# - IPINGRESS with the IP of the ingress
 kubectl create -f ./pymano-mle/k8s/pymano-mle-secret.yml
 kubectl create -f ./pymano-mle/k8s/pymano-mle-deployment.yml
 kubectl create -f ./pymano-mle/k8s/pymano-mle-service.yml
 kubectl create -f ./pymano-mle/k8s/pymano-mle-ingress.yml
 
 # then on local device
-ssh -i "C:\Users\ybeil\Desktop\Datascience\2022-05-02-DataScientest\Cours\MLO\data_enginering_machine.pem" -fNL 80:IPINGRESS:80 ubuntu@IPVM
+# change Path/To/Certificate/File.pem with the path of the SSH certificate
+ssh -i "Path/To/Certificate/File.pem" -fNL 80:IPINGRESS:80 ubuntu@IPVM
+
+
+
+# Run docker containers ---------------------------------
+# First, change IPVM with the IP of the device that runs the projects
+docker-compose -up
+
+
+
+# Test on your local device -----------------------------
+# On one command prompt
+cd ./pymano-mle/api
+flask run -p 5000
+# On another command prompt
+cd ./pymano-mle/web
+flask run -p 8000
+
